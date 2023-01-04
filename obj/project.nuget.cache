@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "04576ToKBpZGf99vNPWu6aSsYiZwG3jY1RLDlDeVDgcYu8JJVMcXpY48uJAwqlDWK2NTrL8iYeZLAAeC2i4eow==",
+  "dgSpecHash": "s1lo7dYHvPO2Bozs//mJhvIx29vjRAUn9LWwpMKUPgEi/Dhk9rWO4AQOFVbXtCfcoZHwri51tWT06lt5bW3jAQ==",
   "success": true,
-  "projectFilePath": "C:\\Adriano\\Projetos\\Microsoft\\Servicos\\Core\\CRMServico\\CRMServico.csproj",
+  "projectFilePath": "C:\\Adriano\\Projetos\\CRM\\CRMServico\\CRMServico.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\adria\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

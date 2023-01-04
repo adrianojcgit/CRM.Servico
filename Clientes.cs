@@ -1,7 +1,7 @@
-﻿using CRMCloud.DTO;
+﻿using CRMServico.DTO;
 using OfficeOpenXml;
 
-namespace CRMCloud
+namespace CRMServico
 {
 	
 	public sealed class Clientes

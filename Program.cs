@@ -1,4 +1,4 @@
-using CRMCloud;
+using CRMServico;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Logging.EventLog;
 

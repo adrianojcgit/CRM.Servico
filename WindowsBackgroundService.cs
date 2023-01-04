@@ -1,4 +1,4 @@
-using CRMCloud.DTO;
+using CRMServico.DTO;
 using System.Data;
 using System.Text;
 using System.Globalization;
@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 using System.Text.Json;
 using RabbitMQ.Client;
 
-namespace CRMCloud
+namespace CRMServico
 {
 	public sealed class WindowsBackgroundService : BackgroundService
     {  
