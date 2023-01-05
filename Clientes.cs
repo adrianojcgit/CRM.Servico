@@ -1,7 +1,7 @@
-﻿using CRMServico.DTO;
+﻿using CRM.Servico.DTO;
 using OfficeOpenXml;
 
-namespace CRMServico
+namespace CRM.Servico
 {
 	
 	public sealed class Clientes
@@ -33,7 +33,7 @@ namespace CRMServico
                 {
                     var cliente = new ClienteDTO
                     {
-                        IdHtml = worksheet.Cells[row, 1].Value == null ? 0 : int.Parse(worksheet.Cells[row, 1].Value.ToString()),
+                        IdHtml = int.Parse(worksheet.Cells[row, 1].Value.ToString()),
                         CodInterno = worksheet.Cells[row, 2].Value.ToString(),
                         CnpjParametro = worksheet.Cells[row, 4].Value.ToString(),
                         CnpjConsultado = worksheet.Cells[row, 5].Value.ToString(),

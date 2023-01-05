@@ -1,4 +1,0 @@
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMCloud\CRMCloud\bin\Release\net6.0\win-x64\publish\win-x64\appsettings.Development.json
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMCloud\CRMCloud\bin\Release\net6.0\win-x64\publish\win-x64\appsettings.json
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMCloud\CRMCloud\bin\Release\net6.0\win-x64\publish\win-x64\CRMCloud.pdb
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMCloud\CRMCloud\bin\Release\net6.0\win-x64\publish\win-x64\CRMCloud.exe

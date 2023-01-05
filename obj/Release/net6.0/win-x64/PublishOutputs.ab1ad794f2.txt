@@ -1,6 +1,0 @@
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\appsettings.Development.json
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\appsettings.json
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\CRMServico.pdb
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\Microsoft.Data.SqlClient.SNI.dll
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\sni.dll
-C:\Adriano\Projetos\Microsoft\Servicos\Core\CRMServico\CRMServico\bin\Release\net6.0\win-x64\publish\win-x64\CRMServico.exe

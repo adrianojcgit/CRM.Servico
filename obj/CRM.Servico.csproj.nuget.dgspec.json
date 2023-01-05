@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRMServico.csproj": {}
+    "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRM.Servico.csproj": {}
   },
   "projects": {
-    "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRMServico.csproj": {
+    "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRM.Servico.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRMServico.csproj",
-        "projectName": "CRMServico",
-        "projectPath": "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRMServico.csproj",
+        "projectUniqueName": "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRM.Servico.csproj",
+        "projectName": "CRM.Servico",
+        "projectPath": "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\CRM.Servico.csproj",
         "packagesPath": "C:\\Users\\adria\\.nuget\\packages\\",
         "outputPath": "C:\\Adriano\\Projetos\\CRM\\CRM.Servico\\obj\\",
         "projectStyle": "PackageReference",

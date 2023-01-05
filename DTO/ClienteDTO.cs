@@ -1,4 +1,4 @@
-﻿namespace CRMServico.DTO
+﻿namespace CRM.Servico.DTO
 {
     public class ClienteDTO
     {

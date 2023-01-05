@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "CRMCloud": {
+    "CRM.Servico": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
