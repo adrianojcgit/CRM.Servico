@@ -5,6 +5,8 @@ using System.Globalization;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
 using RabbitMQ.Client;
+using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace CRM.Servico
 {
@@ -22,58 +24,96 @@ namespace CRM.Servico
         {
             try
             {
-                var conn = _configuration.GetConnectionString("ConnectionMySql");
+                var connMySql = _configuration.GetConnectionString("ConnectionMySql");
+                var connSql = _configuration.GetConnectionString("ConnectionSqlServer");
 
-				while (!stoppingToken.IsCancellationRequested)
+                while (!stoppingToken.IsCancellationRequested)
                 {
 					_logger.LogInformation("Importando dados da planilha Excel para o BD MySQL: {time}", DateTimeOffset.Now);
 					List<ClienteDTO> clientes = Clientes.ReadXls();
-                    Excluir(conn);
+
+                    ExcluirMySQL(connMySql);
+
+                    string porte = "";
+                    decimal fatAnual = 0;
+                    bool ativo;
+
+                    //MySQL
                     foreach (var item in clientes)
                     {
-						string porte = PorteEmpresa();
-                        decimal fatAnual = FatBrutoAnul(porte);
-                        bool ativo = AtivoInativo();
-						_logger.LogInformation("{IdHtml} - {Nome Empresarial} ", item.IdHtml, item.NomeEmpresarial);
+						porte = PorteEmpresa();
+                        fatAnual = FatBrutoAnul(porte);
+                        ativo = AtivoInativo();
+						//_logger.LogInformation("{IdHtml} - {Nome Empresarial} ", item.IdHtml, item.NomeEmpresarial);
                         item.PorteEmpresa = porte;
 						item.FatBrutoAnual = fatAnual;
                         item.Ativo = ativo;
-						InsereCliente(item, conn);
+						InsereClienteMySQL(item, connMySql);
 
-						//
-						var factory = new ConnectionFactory() { HostName = "localhost" };
-						using (var connection = factory.CreateConnection())
+                        //
+                        var factoryMySQL = new ConnectionFactory() { HostName = "localhost" };
+						using (var connection = factoryMySQL.CreateConnection())
 						using (var channel = connection.CreateModel())
 						{
-							channel.QueueDeclare(queue: "Clientes Importados para BD MySQL",
+                            channel.ConfirmSelect();
+                            channel.BasicAcks += Channel_BasicAcks;
+                            channel.BasicNacks += Channel_BasicNacks;
+                            channel.BasicReturn += Channel_BasicReturn;
+
+
+                            channel.QueueDeclare(queue: "clientes2",
 												 durable: false,
 												 exclusive: false,
 												 autoDelete: false,
-                            arguments: null);
+                                                 arguments: null);
 
-							string json = JsonSerializer.Serialize(clientes);
-							var body = Encoding.UTF8.GetBytes(json);
+                            string message = JsonConvert.SerializeObject(item);
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine("Mensagem: " + message);
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.WriteLine("*********************************************************************************************************************");
+                            var body = Encoding.UTF8.GetBytes(message);
 
 							channel.BasicPublish(exchange: "",
-												 routingKey: "Clientes Importados para BD MySQL",
+												 routingKey: "clientes2",
 												 basicProperties: null,
-												 body: body);
-
+												 body: body,
+                                                 mandatory: true);
+                            channel.WaitForConfirms(new TimeSpan(0, 0, 5));
 						}
 
-						await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
-					}
+						await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+
+                    }
+
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
             }
             catch (Exception ex)
             {
+                
                 _logger.LogError(ex, "{Message}", ex.Message);
                 Environment.Exit(1);
             }
         }
 
-		private bool AtivoInativo()
+        private static void Channel_BasicNacks(object sender, RabbitMQ.Client.Events.BasicNackEventArgs e)
+        {
+            Console.WriteLine($"{DateTime.UtcNow:o} -> Basic Nack");
+        }
+
+        private static void Channel_BasicAcks(object sender, RabbitMQ.Client.Events.BasicAckEventArgs e)
+        {
+            Console.WriteLine($"{DateTime.UtcNow:o} -> Basic Ack");
+        }
+
+        private static void Channel_BasicReturn(object sender, RabbitMQ.Client.Events.BasicReturnEventArgs e)
+        {
+            var message = Encoding.UTF8.GetString(e.Body.ToArray());
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"{DateTime.UtcNow:o} -> Basic Return -> { message} ");
+        }
+        private bool AtivoInativo()
 		{
 			int n = 1;
 			int MAX = 2;
@@ -117,7 +157,7 @@ namespace CRM.Servico
 			vlTotal = Convert.ToDecimal(v6, culture);
 			return vlTotal;
 		}
-        public void Excluir(string ConnectionString)
+        public void ExcluirMySQL(string ConnectionString)
         {
             using (MySqlConnection connection = new MySqlConnection(ConnectionString))
             {
@@ -128,7 +168,7 @@ namespace CRM.Servico
                 connection.Close();
             }
         }
-		public void InsereCliente(ClienteDTO model, string ConnectionString)
+		public void InsereClienteMySQL(ClienteDTO model, string ConnectionString)
 		{
 			List<ClienteDTO> results = new List<ClienteDTO>();
 			int returnValue = 0;
@@ -161,52 +201,6 @@ namespace CRM.Servico
 				connection.Close();
 			}
 		}
-		public void Insere(ClienteDTO model, string ConnectionString)
-        {
-            StringBuilder sb = new StringBuilder();
-            //string ConnectionString = @"Server=ADRIANO_DELL\SQLEXPRESS;DataBase=DBCRM;Trusted_Connection=True;";
-			List<ClienteDTO> results = new List<ClienteDTO>();
-            //int returnValue = 0;
-            sb.Append("insert into Clientes(");
-            sb.Append("IdHtml, CodInterno ,CnpjParametro ,CnpjConsultado ,CnpjNumInscricao ,NomeEmpresarial ,NomeFantasia, DataImportacao, DataCadastro, PorteEmpresa, FatBrutoAnual, Ativo ");
-            sb.Append(") values (");
-            sb.Append("@pIdHtml, @pCodInterno ,@pCnpjParametro ,@pCnpjConsultado ,@pCnpjNumInscricao ,@pNomeEmpresarial ,@pNomeFantasia, @pDataImportacao, @pDataCadastro, @pPorteEmpresa, @pFatBrutoAnual, @pAtivo )");
-
-            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
-            {
-                MySqlCommand command = new MySqlCommand(sb.ToString(), connection);
-                command.Connection.Open();
-                //command.CommandText = "insert into Clientes(NomeEmpresarial,NomeFantasia) values (" + model.NomeEmpresarial + "," + model.NomeFantasia + ")";
-                command.CommandType = CommandType.Text;
-                command.Parameters.AddWithValue("@pIdHtml", model.IdHtml);
-                command.Parameters.AddWithValue("@pCodInterno", model.CodInterno);
-                command.Parameters.AddWithValue("@pCnpjParametro", model.CnpjParametro);
-                command.Parameters.AddWithValue("@pCnpjConsultado", model.CnpjConsultado);
-                command.Parameters.AddWithValue("@pCnpjNumInscricao", model.CnpjNumInscricao);
-                command.Parameters.AddWithValue("@pNomeEmpresarial", model.NomeEmpresarial);
-                command.Parameters.AddWithValue("@pNomeFantasia", model.NomeFantasia);
-                command.Parameters.AddWithValue("@pDataImportacao", DateTime.Now);
-				command.Parameters.AddWithValue("@pDataCadastro", DateTime.Now);
-				command.Parameters.AddWithValue("@pPorteEmpresa", model.PorteEmpresa);
-				command.Parameters.AddWithValue("@pFatBrutoAnual", model.FatBrutoAnual);
-				command.Parameters.AddWithValue("@pAtivo", model.Ativo);
-				//command.Parameters.Add("@returnValue", SqlDbType.Int).Direction = ParameterDirection.ReturnValue;
-				command.ExecuteNonQuery();
-                //SqlDataReader reader = command.ExecuteReader();
-                //while (reader.Read())
-                //{
-                //    results.Add(new ClienteModelView()
-                //    {
-                //        Id = (int)reader[0],
-                //        NomeEmpresarial = (string)reader[1],
-                //        NomeFantasia = (string)reader[2]
-                //        //Email = (string)reader[3]
-                //    });
-                //}
-                //reader.Close();
-                //returnValue = (int)command.Parameters["@returnValue"].Value;
-                connection.Close();
-            }
-        }
+  
     }
 }

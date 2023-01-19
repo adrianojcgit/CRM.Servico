@@ -305,3 +305,4 @@ C:\Adriano\Projetos\CRM\CRM.Servico\obj\Debug\net6.0\win-x64\refint\CRM.Servico.
 C:\Adriano\Projetos\CRM\CRM.Servico\obj\Debug\net6.0\win-x64\CRM.Servico.pdb
 C:\Adriano\Projetos\CRM\CRM.Servico\obj\Debug\net6.0\win-x64\CRM.Servico.genruntimeconfig.cache
 C:\Adriano\Projetos\CRM\CRM.Servico\obj\Debug\net6.0\win-x64\ref\CRM.Servico.dll
+C:\Adriano\Projetos\CRM\CRM.Servico\bin\Debug\net6.0\win-x64\Newtonsoft.Json.dll
